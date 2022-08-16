@@ -28,4 +28,24 @@ it('should call swapi-star wars api to get people with a promise', () => {
   });
 });
 
-
+it('should getPeople returns count and result via mock', () => {
+  //comes with jest, jest.fn() is function
+  const mockFetch = jest.fn().mockReturnValue(
+    Promise.resolve({
+      json: () =>
+        Promise.resolve({
+          count: 87,
+          results: [0, 1, 2, 3, 4, 5],
+        }),
+    })
+  );
+  return swapi.getPeoplePromise(mockFetch).then((data) => {
+    console.log(43, data);
+    expect.assertions(4);
+    // jest.fn() allows us to listen in as its a spy, we can see what mockFetch did inside people promise
+    expect(mockFetch.mock.calls.length).toBe(1);
+    expect(mockFetch).toBeCalledWith('https://swapi.py4e.com/api/people');
+    expect(data.count).toEqual(87);
+    expect(data.results.length).toBeGreaterThan(5);
+  });
+});
